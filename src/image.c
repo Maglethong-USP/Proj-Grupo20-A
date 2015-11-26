@@ -20,6 +20,45 @@ Image *image_Create()
 	return img;
 }
 
+Image *image_Create_Alloc(	const unsigned int width, 
+							const unsigned int height,
+							const unsigned int depth,
+							const unsigned short int channel	)
+{
+	int i;
+
+	Image *img = (Image *) malloc( sizeof(Image) );
+	if( img == NULL )
+		return NULL;
+	// Init
+	img->width = width;
+	img->height = height;
+	img->depth = depth;
+	img->channel = channel;
+
+	// Allocate Image
+	img->array = (p_type **) malloc(sizeof(p_type *) *channel);
+	if( img->array == NULL )
+	{
+		free(img);
+		return NULL;
+	}
+	for(i=0; i<channel; i++)
+	{
+		img->array[i] = (p_type *) malloc(sizeof(p_type) *width *height);
+		if(img->array[i] == NULL)
+		{
+			for(i--; i>=0; i--)
+				free(img->array[i]);
+			free(img->array);
+			free(img);
+			return NULL;
+		}
+	}
+
+	return img;
+}
+
 void image_Destroy(Image **image)
 {
 	int i;

@@ -38,6 +38,20 @@ enum Image_File_Mode
 */
 Image *image_Create();
 
+//! Create
+/*!	
+	@param		width 		The image width
+	@param		height 		The image height
+	@param		depth	 	The pixel depth of this image
+	@param		channel 	The number of channels if this image
+	@return		The created image structure
+				NULL if allocation error occurred
+*/
+Image *image_Create_Alloc(	const unsigned int width, 
+							const unsigned int height,
+							const unsigned int depth,
+							const unsigned short int channel	);
+
 //! Destroy
 /*!	
 	@param		image 		The image structure delete
