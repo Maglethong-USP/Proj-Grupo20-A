@@ -1,6 +1,7 @@
 
 
 #include "image.h"
+#include "gpu.h"
 
 #include <stdio.h>
 
@@ -9,16 +10,33 @@
 
 int main(int argc, char *argv[])
 {
-	Image *img;
+	Image *img1;
+	Image *img2;
 	int ret;
 
-	img = image_Create();
+	// Create and read
+	img1 = image_Create();
+	ret = image_Read(img1, argv[1]);
+	if(ret)
+		printf("%d\n", ret);
 
-	ret = image_Read(img, argv[1]);
+	img2 = image_Create_Alloc(img1->width, img1->height, img1->depth, img1->channel);
 
-	ret = image_Write(img, argv[2]);
 
-	image_Destroy(&img);
+	// Smooth
+	smooth(img1->array[0], img2->array[0], img1->width, img1->height);
+	smooth(img1->array[1], img2->array[1], img1->width, img1->height);
+	smooth(img1->array[2], img2->array[2], img1->width, img1->height);
+
+
+	// Write
+	ret = image_Write(img2, argv[2]);
+	if(ret)
+		printf("%d\n", ret);
+
+	// Destroy
+	image_Destroy(&img1);
+	image_Destroy(&img2);
 
 
 	return 0;
