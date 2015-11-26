@@ -15,7 +15,7 @@ SRC 			=	./src
 ######### 
  
 # Source Files 
-SOURCES			=	$(SRC)/main.c $(SRC)/iamge.c $(SRC)/gpu.cu
+SOURCES			=	$(SRC)/main.c $(SRC)/image.c $(SRC)/gpu.cu
  
 # Zip File Name 
 ZIP 			=	project 
