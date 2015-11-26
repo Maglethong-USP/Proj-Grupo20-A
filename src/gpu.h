@@ -7,11 +7,6 @@
 #define TILE_W   16
 #define TILE_H   16
 
-#define R 		1 		// filter radius
-#define D 		3		// filter diameter
-#define S 		9 		// filter size
-
-
 /*
 	Definition of a block size [threads per block]
 	 - 256 (16 *16) is good
