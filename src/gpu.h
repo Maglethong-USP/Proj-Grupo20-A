@@ -1,4 +1,7 @@
+#ifndef __GPU_H__
+#define __GPU_H__
 
+#include "image.h"
 
 /*
 	Definition of image tile size
@@ -18,5 +21,7 @@
  */
 #define BLOCK_WIDTH 	(TILE_W +2)
 #define BLOCK_HEIGHT 	(TILE_H +2)
-void smooth(	unsigned char *host_input, unsigned char *host_output, 
-				unsigned int width, unsigned int height 				);
+void smooth_c3(Image *host_input, Image *host_output);
+void smooth_c1(Image *host_input, Image *host_output);
+
+#endif
