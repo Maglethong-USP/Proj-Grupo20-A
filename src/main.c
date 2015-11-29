@@ -24,10 +24,7 @@ int main(int argc, char *argv[])
 
 
 	// Smooth
-	if(img1->channel == 3)
-		smooth_c3(img1, img2);
-	else if(img1->channel == 1)
-		smooth_c1(img1, img2);
+	smooth(img1, img2);
 
 
 	// Write

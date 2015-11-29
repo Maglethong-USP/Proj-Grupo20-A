@@ -3,8 +3,21 @@ extern "C"
 #include "gpu.h"
 }
 
-
 extern "C"
+
+#include <stdio.h>
+
+#define gpuErrchk(ans) { gpuAssert((ans), __FILE__, __LINE__); }
+inline void gpuAssert(cudaError_t code, const char *file, int line, bool abort=true)
+{
+   if (code != cudaSuccess) 
+   {
+      fprintf(stderr,"GPUassert: %s %s %d\n", cudaGetErrorString(code), file, line);
+      if (abort) exit(code);
+   }
+}
+
+
 __global__ void kernel_smooth_c3(	unsigned char *img_in_r, unsigned char *img_out_r, 
 									unsigned char *img_in_g, unsigned char *img_out_g,
 									unsigned char *img_in_b, unsigned char *img_out_b,
@@ -85,57 +98,6 @@ __global__ void kernel_smooth_c3(	unsigned char *img_in_r, unsigned char *img_ou
 }
 
 
-void smooth_c3(Image *host_input, Image *host_output)
-{
-	int size = host_input->width *host_input->height;
-
-	// Declare device pointer
-	unsigned char *device_input_r, *device_output_r;
-	unsigned char *device_input_g, *device_output_g;
-	unsigned char *device_input_b, *device_output_b;
-
-	// Allocating device memory
-	cudaMalloc(&device_input_r, size);
-	cudaMalloc(&device_output_r, size);
-	cudaMalloc(&device_input_g, size);
-	cudaMalloc(&device_output_g, size);
-	cudaMalloc(&device_input_b, size);
-	cudaMalloc(&device_output_b, size);
-
-	// Copy from host to device
-	cudaMemcpy(device_input_r, host_input->array[0], size, cudaMemcpyHostToDevice);
-	cudaMemcpy(device_input_g, host_input->array[1], size, cudaMemcpyHostToDevice);
-	cudaMemcpy(device_input_b, host_input->array[2], size, cudaMemcpyHostToDevice);
-
-	// Declaring block size
-	dim3 block_size(BLOCK_WIDTH, BLOCK_HEIGHT);
-
-	 // Declaring grid size to fit whole image
-	dim3 grid_size;
-	grid_size.x = (host_input->width + TILE_W - 1)/TILE_W;
-	grid_size.y = (host_input->height + TILE_H - 1)/TILE_H;
-
-	// Call Kernel
-	kernel_smooth_c3<<<grid_size, block_size>>>(	device_input_r, device_output_r,
-													device_input_g, device_output_g,
-													device_input_b, device_output_b,
-													host_input->width, host_input->height);
-
-	// Copy from device to host
-	cudaMemcpy(host_output->array[0], device_output_r, size, cudaMemcpyDeviceToHost);
-	cudaMemcpy(host_output->array[1], device_output_g, size, cudaMemcpyDeviceToHost);
-	cudaMemcpy(host_output->array[2], device_output_b, size, cudaMemcpyDeviceToHost);
-
-	// Free device memory
-	cudaFree(device_input_r);
-	cudaFree(device_output_r);
-	cudaFree(device_input_g);
-	cudaFree(device_output_g);
-	cudaFree(device_input_b);
-	cudaFree(device_output_b);
-}
-
-
 __global__ void kernel_smooth_c1(	unsigned char *img_in, unsigned char *img_out,
 									unsigned int width, unsigned int height 		)
 {
@@ -181,20 +143,14 @@ __global__ void kernel_smooth_c1(	unsigned char *img_in, unsigned char *img_out,
 	}
 }
 
-
-void smooth_c1(Image *host_input, Image *host_output)
+void smooth(Image *host_input, Image *host_output)
 {
 	int size = host_input->width *host_input->height;
 
 	// Declare device pointer
-	unsigned char *device_input, *device_output;
-
-	// Allocating device memory
-	cudaMalloc(&device_input, size);
-	cudaMalloc(&device_output, size);
-
-	// Copy from host to device
-	cudaMemcpy(device_input, host_input->array[0], size, cudaMemcpyHostToDevice);
+	unsigned char *device_input_r, *device_output_r;
+	unsigned char *device_input_g, *device_output_g;
+	unsigned char *device_input_b, *device_output_b;
 
 	// Declaring block size
 	dim3 block_size(BLOCK_WIDTH, BLOCK_HEIGHT);
@@ -204,14 +160,69 @@ void smooth_c1(Image *host_input, Image *host_output)
 	grid_size.x = (host_input->width + TILE_W - 1)/TILE_W;
 	grid_size.y = (host_input->height + TILE_H - 1)/TILE_H;
 
-	// Call Kernel
-	kernel_smooth_c1<<<grid_size, block_size>>>(	device_input, device_output,
-													host_input->width, host_input->height);
+	// 3 Channel Image
+	if(host_input->channel == 3)
+	{
+		// Allocating device memory
+		gpuErrchk( cudaMalloc(&device_input_r, size) );
+		gpuErrchk( cudaMalloc(&device_output_r, size) );
+		gpuErrchk( cudaMalloc(&device_input_g, size) );
+		gpuErrchk( cudaMalloc(&device_output_g, size) );
+		gpuErrchk( cudaMalloc(&device_input_b, size) );
+		gpuErrchk( cudaMalloc(&device_output_b, size) );
 
-	// Copy from device to host
-	cudaMemcpy(host_output->array[0], device_output, size, cudaMemcpyDeviceToHost);
+		// Copy from host to device
+		gpuErrchk( cudaMemcpy(device_input_r, host_input->array[0], size, cudaMemcpyHostToDevice) );
+		gpuErrchk( cudaMemcpy(device_input_g, host_input->array[1], size, cudaMemcpyHostToDevice) );
+		gpuErrchk( cudaMemcpy(device_input_b, host_input->array[2], size, cudaMemcpyHostToDevice) );
 
-	// Free device memory
-	cudaFree(device_input);
-	cudaFree(device_output);
+		// Call Kernel
+		kernel_smooth_c3<<<grid_size, block_size>>>(	device_input_r, device_output_r,
+														device_input_g, device_output_g,
+														device_input_b, device_output_b,
+														host_input->width, host_input->height);
+	
+		// Error check
+		gpuErrchk( cudaPeekAtLastError() );
+		gpuErrchk( cudaDeviceSynchronize() );
+
+		// Copy from device to host
+		gpuErrchk( cudaMemcpy(host_output->array[0], device_output_r, size, cudaMemcpyDeviceToHost) );
+		gpuErrchk( cudaMemcpy(host_output->array[1], device_output_g, size, cudaMemcpyDeviceToHost) );
+		gpuErrchk( cudaMemcpy(host_output->array[2], device_output_b, size, cudaMemcpyDeviceToHost) );
+
+		// Free device memory
+		cudaFree(device_input_r);
+		cudaFree(device_output_r);
+		cudaFree(device_input_g);
+		cudaFree(device_output_g);
+		cudaFree(device_input_b);
+		cudaFree(device_output_b);
+
+	}
+	// 1 Channel Image
+	else if(host_input->channel == 1)
+	{
+		// Allocating device memory
+		gpuErrchk( cudaMalloc(&device_input_r, size) );
+		gpuErrchk( cudaMalloc(&device_output_r, size) );
+
+		// Copy from host to device
+		gpuErrchk( cudaMemcpy(device_input_r, host_input->array[0], size, cudaMemcpyHostToDevice) );
+
+		// Call Kernel
+		kernel_smooth_c1<<<grid_size, block_size>>>(	device_input_r, device_output_r,
+														host_input->width, host_input->height);
+
+		// Error check
+		gpuErrchk( cudaPeekAtLastError() );
+		gpuErrchk( cudaDeviceSynchronize() );
+
+		// Copy from device to host
+		gpuErrchk( cudaMemcpy(host_output->array[0], device_output_r, size, cudaMemcpyDeviceToHost) );
+
+		// Free device memory
+		cudaFree(device_input_r);
+		cudaFree(device_output_r);
+	}
 }

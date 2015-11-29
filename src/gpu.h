@@ -21,7 +21,6 @@
  */
 #define BLOCK_WIDTH 	(TILE_W +2)
 #define BLOCK_HEIGHT 	(TILE_H +2)
-void smooth_c3(Image *host_input, Image *host_output);
-void smooth_c1(Image *host_input, Image *host_output);
+void smooth(Image *host_input, Image *host_output);
 
 #endif
