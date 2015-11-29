@@ -117,7 +117,7 @@ int image_Read(Image *image, const char *fileName)
 	if(mode & COLOR)
 		channel = 3;
 	else
-		channel = 0;
+		channel = 1;
 
 	// Reading whitespace
 	fgetc(fp);
@@ -210,7 +210,7 @@ int image_Write(Image *image, const char *fileName)
 
 	// Write header
 	if(image->channel == 1)
-		fprintf(fp, "P3\n");
+		fprintf(fp, "P5\n");
 	else
 		fprintf(fp, "P6\n");
 	fprintf(fp, "%d %d\n", image->width, image->height);
