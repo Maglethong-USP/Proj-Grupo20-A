@@ -1,0 +1,37 @@
+
+echo "" ;
+echo " =================================================== GPU ===================================================" ;
+echo "" ;
+
+echo "" ;echo "S BW" ;for i in {1..10}; do time ~/Proj-Grupo20-A/bin/prog ~/Images/Small\(2048x1024\).pgm ~/Proj-Grupo20-A/doc/out.ppm ; done;echo "";echo "S CL" ;for i in {1..10}; do time ~/Proj-Grupo20-A/bin/prog ~/Images/Small\(2048x1024\).ppm ~/Proj-Grupo20-A/doc/out.ppm ; done;echo "" ;echo "M BW" ;for i in {1..10}; do time ~/Proj-Grupo20-A/bin/prog ~/Images/Medium\(4096x2048\).pgm ~/Proj-Grupo20-A/doc/out.ppm ; done;echo "";echo "M CL" ;for i in {1..10}; do time ~/Proj-Grupo20-A/bin/prog ~/Images/Medium\(4096x2048\).ppm ~/Proj-Grupo20-A/doc/out.ppm ; done;echo "" ;echo "L BW" ;for i in {1..10}; do time ~/Proj-Grupo20-A/bin/prog ~/Images/Large\(8192x4096\).pgm ~/Proj-Grupo20-A/doc/out.ppm ; done;echo "";echo "L CL" ;for i in {1..10}; do time ~/Proj-Grupo20-A/bin/prog ~/Images/Large\(8192x4096\).ppm ~/Proj-Grupo20-A/doc/out.ppm ; done;echo "" ;echo "XL BW" ;for i in {1..10}; do time ~/Proj-Grupo20-A/bin/prog ~/Images/ExtraLarge\(16384x8192\).pgm ~/Proj-Grupo20-A/doc/out.ppm ; done;echo "";echo "XL CL" ;for i in {1..10}; do time ~/Proj-Grupo20-A/bin/prog ~/Images/ExtraLarge\(16384x8192\).ppm ~/Proj-Grupo20-A/doc/out.ppm ; done;echo "" ;
+
+
+
+
+echo "" ;
+echo " =================================================== SEQUENCIAL ===================================================" ;
+echo "" ;
+
+echo "" ;echo "S BW" ;for i in {1..10};do time ~/Trab02-Grupo20-A/bin/sequencial ~/Images/Small\(2048x1024\).pgm ~/Trab02-Grupo20-A/doc/out.ppm ;done;echo "";echo "S CL" ;for i in {1..10};do time ~/Trab02-Grupo20-A/bin/sequencial ~/Images/Small\(2048x1024\).ppm ~/Trab02-Grupo20-A/doc/out.ppm ;done;echo "" ;echo "M BW" ; for i in {1..10};do time ~/Trab02-Grupo20-A/bin/sequencial ~/Images/Medium\(4096x2048\).pgm ~/Trab02-Grupo20-A/doc/out.ppm ;done;echo "";echo "M CL" ;for i in {1..10};do time ~/Trab02-Grupo20-A/bin/sequencial ~/Images/Medium\(4096x2048\).ppm ~/Trab02-Grupo20-A/doc/out.ppm ;done;echo "" ;echo "L BW" ;for i in {1..10};do time ~/Trab02-Grupo20-A/bin/sequencial ~/Images/Large\(8192x4096\).pgm ~/Trab02-Grupo20-A/doc/out.ppm ;done;echo "";echo "L CL" ;for i in {1..10};do time ~/Trab02-Grupo20-A/bin/sequencial ~/Images/Large\(8192x4096\).ppm ~/Trab02-Grupo20-A/doc/out.ppm ;done;echo "" ;echo "XL BW" ;for i in {1..10};do time ~/Trab02-Grupo20-A/bin/sequencial ~/Images/ExtraLarge\(16384x8192\).pgm ~/Trab02-Grupo20-A/doc/out.ppm ;done;echo "";echo "XL CL" ;for i in {1..10};do time ~/Trab02-Grupo20-A/bin/sequencial ~/Images/ExtraLarge\(16384x8192\).ppm ~/Trab02-Grupo20-A/doc/out.ppm ;done;echo "" ;
+
+
+
+echo "" ;
+echo " =================================================== Paralelo 4 ===================================================" ;
+echo "" ;
+
+
+echo "" ;
+
+echo "S BW" ;for i in {1..10}; do time mpirun --host sp,rj,mg,pr,sc,go,ms,ba,rn,pa,pe -np 4 ~/Trab02-Grupo20-A/bin/parallel ~/Images/Small\(2048x1024\).pgm ~/Trab02-Grupo20A/doc/out.ppm 2 2; done;echo "";echo "S CL" ;for i in {1..10}; do time mpirun --host sp,rj,mg,pr,sc,go,ms,ba,rn,pa,pe -np 4 ~/Trab02-Grupo20-A/bin/parallel ~/Images/Small\(2048x1024\).ppm ~/Trab02-Grupo20A/doc/out.ppm 2 2; done;echo "" ;echo "M BW" ;for i in {1..10}; do time mpirun --host sp,rj,mg,pr,sc,go,ms,ba,rn,pa,pe -np 4 ~/Trab02-Grupo20-A/bin/parallel ~/Images/Medium\(4096x2048\).pgm ~/Trab02-Grupo20A/doc/out.ppm 2 2; done;echo "";echo "M CL" ;for i in {1..10}; do time mpirun --host sp,rj,mg,pr,sc,go,ms,ba,rn,pa,pe -np 4 ~/Trab02-Grupo20-A/bin/parallel ~/Images/Medium\(4096x2048\).ppm ~/Trab02-Grupo20A/doc/out.ppm 2 2; done;echo "" ;echo "L BW" ;for i in {1..10}; do time mpirun --host sp,rj,mg,pr,sc,go,ms,ba,rn,pa,pe -np 4 ~/Trab02-Grupo20-A/bin/parallel ~/Images/Large\(8192x4096\).pgm ~/Trab02-Grupo20A/doc/out.ppm 2 2; done;echo "";echo "L CL" ;for i in {1..10}; do time mpirun --host sp,rj,mg,pr,sc,go,ms,ba,rn,pa,pe -np 4 ~/Trab02-Grupo20-A/bin/parallel ~/Images/Large\(8192x4096\).ppm ~/Trab02-Grupo20A/doc/out.ppm 2 2; done;echo "" ;echo "XL BW" ;for i in {1..10}; do time mpirun --host sp,rj,mg,pr,sc,go,ms,ba,rn,pa,pe -np 4 ~/Trab02-Grupo20-A/bin/parallel ~/Images/ExtraLarge\(16384x8192\).pgm ~/Trab02Grupo20-A/doc/outppm 2 2; done;echo "";echo "XL CL" ;for i in {1..10}; do time mpirun --host sp,rj,mg,pr,sc,go,ms,ba,rn,pa,pe -np 4 ~/Trab02-Grupo20-A/bin/parallel ~/Images/ExtraLarge\(16384x8192\).ppm ~/Trab02Grupo20-A/doc/outppm 2 2; done;echo "" ;
+
+
+
+Paralelo 8
+
+echo "" ;
+echo " =================================================== Paralelo 8 ===================================================" ;
+echo "" ;
+
+echo "" ;echo "S BW" ;for i in {1..10}; do time mpirun --host sp,rj,mg,pr,sc,go,ms,ba,rn,pa,pe -np 8 ~/Trab02-Grupo20-A/bin/parallel ~/Images/Small\(2048x1024\).pgm ~/Trab02Grupo20-A/doc/out.ppm 2 4; done;echo "";echo "S CL" ;for i in {1..10}; do time mpirun --host sp,rj,mg,pr,sc,go,ms,ba,rn,pa,pe -np 8 ~/Trab02-Grupo20-A/bin/parallel ~/Images/Small\(2048x1024\).ppm ~/Trab02-Grupo20A/doc/out.ppm 2 4; done;echo "" ;echo "M BW" ;for i in {1..10}; do time mpirun --host sp,rj,mg,pr,sc,go,ms,ba,rn,pa,pe -np 8 ~/Trab02-Grupo20-A/bin/parallel ~/Images/Medium\(4096x2048\).pgm ~/Trab02-Grupo20A/doc/out.ppm 2 4; done;echo "";echo "M CL" ;for i in {1..10}; do time mpirun --host sp,rj,mg,pr,sc,go,ms,ba,rn,pa,pe -np 8 ~/Trab02-Grupo20-A/bin/parallel ~/Images/Medium\(4096x2048\).ppm ~/Trab02-Grupo20A/doc/out.ppm 2 4; done;echo "" ;echo "L BW" ;for i in {1..10}; do time mpirun --host sp,rj,mg,pr,sc,go,ms,ba,rn,pa,pe -np 8 ~/Trab02-Grupo20-A/bin/parallel ~/Images/Large\(8192x4096\).pgm ~/Trab02-Grupo20A/doc/out.ppm 2 4; done;echo "";echo "L CL" ;for i in {1..10}; do time mpirun --host sp,rj,mg,pr,sc,go,ms,ba,rn,pa,pe -np 8 ~/Trab02-Grupo20-A/bin/parallel ~/Images/Large\(8192x4096\).ppm ~/Trab02-Grupo20A/doc/out.ppm 2 4; done;echo "" ;echo "XL BW" ;for i in {1..10}; do time mpirun --host sp,rj,mg,pr,sc,go,ms,ba,rn,pa,pe -np 8 ~/Trab02-Grupo20-A/bin/parallel ~/Images/ExtraLarge\(16384x8192\).pgm ~/Trab02Grupo20-A/doc/outppm 2 4; done;echo "";echo "XL CL" ;for i in {1..10}; do time mpirun --host sp,rj,mg,pr,sc,go,ms,ba,rn,pa,pe -np 8 ~/Trab02-Grupo20-A/bin/parallel ~/Images/ExtraLarge\(16384x8192\).ppm ~/Trab02Grupo20-A/doc/outppm 2 4; done;echo "" ;
+
